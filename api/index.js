@@ -66,11 +66,8 @@ app.post('/api/stripe/create-session', async (req, res) => {
     const unitAmount =
       (custom ? parseInt(PRICE_MINOR_UNIT_CUSTOM, 10) : parseInt(PRICE_MINOR_UNIT_TEMPLATE, 10)) || 99;
 
-    // Messaggio definitivo (se firmato)
-    let msg = template;
-    if (signed) {
-      msg += '\n\n-- Inviato con simpatia da Mavattenaffanculo.site';
-    }
+    // Messaggio definitivo (senza firma aggiuntiva)
+    const msg = template;
 
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ['card'],
@@ -82,7 +79,7 @@ app.post('/api/stripe/create-session', async (req, res) => {
               name: 'Fanculo automatico',
               description: 'Invia un messaggio ironico via email!',
             },
-            unit_amount: unitAmount, // centesimi
+            unit_amount: unitAmount,
           },
           quantity: 1,
         },
@@ -90,23 +87,21 @@ app.post('/api/stripe/create-session', async (req, res) => {
       mode: 'payment',
       success_url: `${req.protocol}://${req.get('host')}/success?success=1`,
       cancel_url: `${req.protocol}://${req.get('host')}/cancel`,
-
-      // Dati necessari all'email via EmailJS (evita tempOrders)
       metadata: {
-        email,                    // destinatario
-        msg_template: msg,        // messaggio finale
+        email,
+        msg_template: msg,
         signed: String(!!signed),
         custom: String(!!custom),
       },
     });
 
-    // Restituisci sessionId (coerente col tuo frontend)
     return res.json({ sessionId: session.id });
   } catch (err) {
     console.error('Stripe session error:', err);
     return res.status(500).send('Server error');
   }
 });
+
 
 // Webhook Stripe: legge i metadata e invia la mail via EmailJS
 app.post('/api/stripe/webhook', async (req, res) => {
