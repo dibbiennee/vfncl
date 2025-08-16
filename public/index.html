@@ -1,13 +1,438 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="it">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Home</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>mavattenaffanculo.site</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://js.stripe.com/v3/"></script>
 </head>
-<body>
-  <h1>Home</h1>
-  <p>App online su Render.</p>
-  <a href="/success">Vai a Success</a> | <a href="/cancel">Vai a Cancel</a>
+<body class="bg-gray-100 text-gray-800 font-inter">
+
+  <!-- Hero Section -->
+  <section id="hero" class="flex flex-col items-center justify-center text-center py-20 bg-white px-4">
+    <h1 class="text-4xl md:text-6xl font-bold text-orange-600 mb-4">
+      Invia un Fanculo con un Click!
+    </h1>
+    <p class="text-lg md:text-xl mb-6 px-4">
+      Il modo più veloce e divertente per mandare un messaggio indimenticabile.
+    </p>
+    <div class="flex gap-4">
+      <button id="open-send-popup" class="px-6 py-3 bg-orange-600 text-white rounded-lg hover:bg-orange-700 transition">
+        Invia ora – 0,99 €
+      </button>
+      <a href="#how-it-works" class="px-6 py-3 border border-orange-600 text-orange-600 rounded-lg hover:bg-orange-100 transition">
+        Come funziona
+      </a>
+    </div>
+  </section>
+
+  <!-- Vantaggi rapidi -->
+  <section id="benefits" class="py-16 px-4">
+    <div class="max-w-4xl mx-auto grid grid-cols-1 sm:grid-cols-3 gap-8 text-center">
+      <div class="p-6 bg-white rounded-lg shadow hover:shadow-lg transition">
+        <h3 class="text-xl font-semibold mb-2">Veloce</h3>
+        <p>In meno di un minuto il tuo messaggio arriva.</p>
+      </div>
+      <div class="p-6 bg-white rounded-lg shadow hover:shadow-lg transition">
+        <h3 class="text-xl font-semibold mb-2">Divertente</h3>
+        <p>Un'esperienza ironica che fa sorridere.</p>
+      </div>
+      <div class="p-6 bg-white rounded-lg shadow hover:shadow-lg transition relative">
+        <h3 class="text-xl font-semibold mb-2">Anonimo</h3>
+        <p>Se vuoi, nessuno saprà che sei stato tu.</p>
+        <small class="absolute bottom-3 right-3 text-xs text-gray-500">(opzionale)</small>
+      </div>
+    </div>
+  </section>
+
+  <!-- Come funziona -->
+  <section id="how-it-works" class="py-16 bg-white px-4">
+    <div class="max-w-3xl mx-auto space-y-12 px-4">
+      <div class="flex items-start gap-4">
+        <div class="text-3xl font-bold text-orange-600">1.</div>
+        <div>
+          <h4 class="font-semibold mb-1">Scegli il destinatario</h4>
+          <p>Inserisci l'email a cui inviare il tuo messaggio.</p>
+        </div>
+      </div>
+      <div class="flex items-start gap-4">
+        <div class="text-3xl font-bold text-orange-600">2.</div>
+        <div>
+          <h4 class="font-semibold mb-1">Scrivi o seleziona un messaggio</h4>
+          <p>Tra 4 opzioni ironiche o uno personalizzato.</p>
+        </div>
+      </div>
+      <div class="flex items-start gap-4">
+        <div class="text-3xl font-bold text-orange-600">3.</div>
+        <div>
+          <h4 class="font-semibold mb-1">Paga e invio</h4>
+          <p>Pagamento sicuro via Stripe. Copia inviata anche a te.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Chi siamo -->
+  <section id="chi-siamo" class="py-16 bg-gray-50 px-4">
+    <div class="max-w-3xl mx-auto px-4">
+      <h2 class="text-2xl font-bold mb-4 text-center text-orange-600">Chi siamo</h2>
+      <p class="text-center text-lg mb-2">
+        Siamo un piccolo team italiano con una grande passione per l'ironia e la leggerezza.<br>
+        Il nostro obiettivo? Farti sorridere e rompere la monotonia delle mail standard con un tocco dissacrante, ma sempre con rispetto!
+      </p>
+      <p class="text-center text-gray-600 text-sm">
+        Ogni messaggio, anche il più "cattivo", nasce <b>per gioco</b> e con l'intento di regalare una risata.<br>
+        <span class="block mt-2">Se vuoi parlarci, scrivici:<br>
+          <a href="mailto:info@mavattenaffanculo.site" class="text-orange-600 hover:underline">info@mavattenaffanculo.site</a>
+        </span>
+      </p>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section id="faq" class="py-16 bg-white px-4">
+    <div class="max-w-3xl mx-auto px-4">
+      <h2 class="text-2xl font-bold mb-8 text-center text-orange-600">FAQ</h2>
+      <div class="space-y-4">
+
+        <details class="border rounded-lg p-4 group">
+          <summary class="cursor-pointer font-semibold text-lg flex items-center justify-between">
+            Il servizio è anonimo?
+            <span class="ml-2 transition-transform group-open:rotate-180">&#9660;</span>
+          </summary>
+          <p class="text-gray-700 mt-2">
+            Sì! Se non firmi il messaggio, il destinatario non saprà chi sei. Se vuoi, puoi anche lasciare una firma personalizzata.
+          </p>
+        </details>
+
+        <details class="border rounded-lg p-4 group">
+          <summary class="cursor-pointer font-semibold text-lg flex items-center justify-between">
+            Il destinatario può rispondere?
+            <span class="ml-2 transition-transform group-open:rotate-180">&#9660;</span>
+          </summary>
+          <p class="text-gray-700 mt-2">No, la mail è unidirezionale e non sono previste risposte.</p>
+        </details>
+
+        <details class="border rounded-lg p-4 group">
+          <summary class="cursor-pointer font-semibold text-lg flex items-center justify-between">
+            Quanto ci mette ad arrivare?
+            <span class="ml-2 transition-transform group-open:rotate-180">&#9660;</span>
+          </summary>
+          <p class="text-gray-700 mt-2">Di solito pochi secondi/minuti! In casi rari qualche minuto in più.</p>
+        </details>
+
+        <details class="border rounded-lg p-4 group">
+          <summary class="cursor-pointer font-semibold text-lg flex items-center justify-between">
+            Posso scrivere qualsiasi cosa?
+            <span class="ml-2 transition-transform group-open:rotate-180">&#9660;</span>
+          </summary>
+          <p class="text-gray-700 mt-2">
+            No, i messaggi vengono filtrati: niente minacce, insulti gravi o contenuti illegali. I messaggi fuori regola non vengono inviati e riceverai una notifica della mancata consegna.
+          </p>
+        </details>
+
+        <details class="border rounded-lg p-4 group">
+          <summary class="cursor-pointer font-semibold text-lg flex items-center justify-between">
+            Posso inviare lo stesso messaggio a più persone?
+            <span class="ml-2 transition-transform group-open:rotate-180">&#9660;</span>
+          </summary>
+          <p class="text-gray-700 mt-2">
+            No, ogni invio corrisponde a un destinatario unico per garantire il massimo rispetto e controllo.
+          </p>
+        </details>
+
+        <details class="border rounded-lg p-4 group">
+          <summary class="cursor-pointer font-semibold text-lg flex items-center justify-between">
+            Posso avere la ricevuta?
+            <span class="ml-2 transition-transform group-open:rotate-180">&#9660;</span>
+          </summary>
+          <p class="text-gray-700 mt-2">
+            Certo! Ricevi sempre copia del messaggio nella tua email (se indicata).
+          </p>
+        </details>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA finale -->
+  <section class="py-12 bg-orange-50 px-4">
+    <div class="max-w-xl mx-auto text-center px-4">
+      <h2 class="text-2xl font-bold text-orange-600 mb-4">Pronto a mandare il tuo messaggio?</h2>
+      <p class="mb-6">Fallo ora in modo divertente, anonimo e sicuro: basta un click!</p>
+      <button onclick="document.getElementById('open-send-popup').click()"
+        class="px-8 py-3 bg-orange-600 text-white text-lg rounded-lg hover:bg-orange-700 transition font-semibold">
+        Invia ora
+      </button>
+    </div>
+  </section>
+
+  <!-- POPUP Privacy Policy -->
+  <div id="privacy-popup" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 hidden z-50">
+    <div class="bg-white rounded-lg w-full max-w-2xl px-6 py-8 relative shadow-lg overflow-y-auto max-h-screen">
+      <button onclick="closeModal('privacy-popup')" class="absolute top-3 right-3 text-gray-500 hover:text-gray-800 text-2xl">&times;</button>
+      <h2 class="text-2xl font-bold mb-4 text-center text-orange-600">Privacy Policy</h2>
+      <div class="space-y-4 text-gray-700 text-sm">
+        <p>Questa Privacy Policy descrive come tracciamo i visitatori e utilizziamo cookie e servizi di terze parti.</p>
+        <h3 class="font-semibold mt-4">1. Analytics e Cookie</h3>
+        <p>Utilizziamo strumenti di web analytics (es. Cloudflare Insights, Google Analytics) per monitorare il traffico e migliorare il servizio. Impieghiamo cookie funzionali necessari per il corretto funzionamento del sito e cookie di terze parti legati a Stripe per gestire i pagamenti.</p>
+        <h3 class="font-semibold mt-4">2. Raccolta Dati</h3>
+        <p>Al momento non raccogliamo e memorizziamo indirizzi email degli utenti o dei destinatari né condividiamo dati personali (email, IP, messaggi) con terzi o team interni.</p>
+        <h3 class="font-semibold mt-4">3. Uso dei Dati</h3>
+        <p>I dati di navigazione vengono utilizzati esclusivamente per analisi statistiche e miglioramento del sito. Non trattiamo richieste di cancellazione, rettifica o accesso ai dati, in quanto non conserviamo dati personali identificativi.</p>
+        <h3 class="font-semibold mt-4">4. Contenuti Offensivi</h3>
+        <p>Non siamo responsabili dei contenuti offensivi inseriti dagli utenti. Ogni messaggio è generato dall’utente e il nostro ruolo è solo tecnico di invio.</p>
+        <h3 class="font-semibold mt-4">5. Contatti</h3>
+        <p>Per domande su questa Privacy Policy, scrivi a <a href="mailto:info@mavattenaffanculo.site" class="text-orange-600 hover:underline">info@mavattenaffanculo.site</a>.</p>
+        <p class="text-xs text-gray-500 mt-4">Ultimo aggiornamento: 16 agosto 2025</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- POPUP Termini di Servizio -->
+  <div id="terms-popup" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 hidden z-50">
+    <div class="bg-white rounded-lg w-full max-w-2xl px-6 py-8 relative shadow-lg overflow-y-auto max-h-screen">
+      <button onclick="closeModal('terms-popup')" class="absolute top-3 right-3 text-gray-500 hover:text-gray-800 text-2xl">&times;</button>
+      <h2 class="text-2xl font-bold mb-4 text-center text-orange-600">Termini di Servizio</h2>
+      <div class="space-y-4 text-gray-700 text-sm">
+        <p>Benvenuto su mavattenaffanculo.site. Utilizzando il sito accetti i seguenti termini:</p>
+        <h3 class="font-semibold mt-4">1. Servizio e Divieti</h3>
+        <p>Offriamo un servizio di invio email ironiche. È vietato qualsiasi uso illegale, diffamatorio o in violazione delle leggi italiane ed europee.</p>
+        <h3 class="font-semibold mt-4">2. Responsabilità</h3>
+        <p>Non siamo responsabili dei contenuti offensivi inviati dagli utenti. Forniamo solo la piattaforma tecnica di invio.</p>
+        <h3 class="font-semibold mt-4">3. Pagamenti</h3>
+        <p>I pagamenti sono gestiti da Stripe tramite procedure sicure. Eventuali malfunzionamenti temporanei di Stripe sono fuori dal nostro controllo.</p>
+        <h3 class="font-semibold mt-4">4. Legge Applicabile</h3>
+        <p>Questi Termini sono regolati dalle leggi italiane e dalla normativa europea. Il foro competente è quello del luogo di residenza del titolare.</p>
+        <p class="text-xs text-gray-500 mt-4">Ultima revisione: 16 agosto 2025</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Popup Invio Messaggio -->
+  <div id="send-popup" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 overflow-y-auto hidden z-50">
+    <div class="bg-white rounded-lg w-full max-w-lg px-4 py-8 relative shadow-lg overflow-y-auto max-h-screen">
+      <button id="close-send-popup" class="absolute top-3 right-3 text-gray-500 hover:text-gray-800 text-2xl">&times;</button>
+      <h2 class="text-2xl font-semibold mb-4">Invia un messaggio</h2>
+      <form id="send-form" class="space-y-4">
+        <!-- Email destinatario -->
+        <label class="block">
+          <span class="block mb-1">Destinatario (email)</span>
+          <input type="email" id="recipient-email" required class="w-full px-3 py-2 border rounded"/>
+          <small class="block mt-1 text-xs text-gray-500">
+            ⚠️ Controlla bene l'indirizzo email! Non rispondiamo di errori di digitazione e non sono previsti rimborsi.
+          </small>
+        </label>
+        <!-- Messaggio da inviare -->
+        <label class="block">
+          <span class="block mb-1">Messaggio da inviare</span>
+          <select id="template-select" class="w-full px-3 py-2 border rounded text-center" onchange="updatePreview()">
+            <option value="">— Nessun template selezionato —</option>
+            <option value="Ciao! Volevo mandarti questo messaggio per dirti che... vaffanculo! Con tutto l'affetto del mondo. 😘">
+              Ciao! Volevo mandarti questo messaggio per dirti che... vaffanculo! Con tutto l'affetto del mondo. 😘
+            </option>
+            <option value="Ti mando questo piccolo VAFFANCULO carico di buonumore! 🎉">
+              Ti mando questo piccolo VAFFANCULO carico di buonumore! 🎉
+            </option>
+            <option value="Amore mio, tra tutte le persone al mondo, sei quella a cui voglio dire: vaffanculo. ❤️">
+              Amore mio, tra tutte le persone al mondo, sei quella a cui voglio dire: vaffanculo. ❤️
+            </option>
+            <option value="Solo... vaffanculo!">Solo... vaffanculo!</option>
+          </select>
+        </label>
+        <!-- Checkbox messaggio personalizzato -->
+        <label class="flex items-center space-x-2">
+          <input type="checkbox" id="custom-checkbox" class="w-4 h-4" onchange="toggleCustomMessage(this)"/>
+          <span>Messaggio personalizzato</span>
+        </label>
+        <!-- Custom message textarea -->
+        <div id="custom-message-block" style="display:none;">
+          <textarea id="custom-message" class="w-full px-3 py-2 border rounded" maxlength="200"
+            placeholder="Scrivi il tuo messaggio personalizzato..."></textarea>
+          <small class="block mt-1 text-xs text-gray-500">
+            Scrivi qui il tuo messaggio, fino a 200 caratteri.
+          </small>
+        </div>
+        <!-- Firma/anonimo -->
+        <label class="flex items-center space-x-2">
+          <input type="checkbox" id="sign-checkbox" class="w-4 h-4" onchange="toggleSignature(this)"/>
+          <span>Firma il messaggio</span>
+        </label>
+        <!-- Campo firma -->
+        <div id="signature-block" class="mt-2" style="display:none;">
+          <input type="text" id="signature-input" class="w-full px-3 py-2 border rounded" placeholder="La tua firma"/>
+        </div>
+        <!-- Pulsante pagamento -->
+        <button type="button" id="proceed-payment"
+          class="w-full mt-4 py-2 bg-orange-600 text-white rounded hover:bg-orange-700 transition">
+          Procedi al pagamento su Stripe
+        </button>
+      </form>
+      <div id="preview-block" class="border mt-6 p-3 rounded bg-gray-50 text-sm hidden">
+        <strong>Anteprima del messaggio:</strong>
+        <div id="preview-message" class="mt-2 whitespace-pre-wrap text-center"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Popup Thank-you -->
+  <div id="thankyou-popup" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden z-50">
+    <div class="bg-white rounded-lg w-80 p-6 text-center relative">
+      <button id="close-thankyou-popup" class="absolute top-3 right-3 text-gray-500 hover:text-gray-800">&times;</button>
+      <h2 class="text-2xl font-semibold mb-4">Grazie!</h2>
+      <p>Il tuo messaggio è stato inviato. (¯\\_(ツ)\\_/¯)</p>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="py-8 text-center text-sm text-gray-600 px-4">
+    <button onclick="openModal('privacy-popup')" class="hover:underline mr-2">Privacy</button>·
+    <button onclick="openModal('terms-popup')" class="hover:underline ml-2">Termini</button>
+  </footer>
+
+  <!-- Modals Script -->
+  <script>
+  // ===============================
+  // Modali Privacy/Termini
+  // ===============================
+  function openModal(id) {
+    document.getElementById(id).classList.remove('hidden');
+  }
+  function closeModal(id) {
+    document.getElementById(id).classList.add('hidden');
+  }
+
+  // ===============================
+  // Popup invio e popup "Grazie"
+  // ===============================
+  const sendPopup = document.getElementById('send-popup');
+  const thankPopup = document.getElementById('thankyou-popup');
+
+  document.getElementById('open-send-popup').onclick = () => sendPopup.classList.remove('hidden');
+  document.getElementById('close-send-popup').onclick = () => sendPopup.classList.add('hidden');
+  document.getElementById('close-thankyou-popup').onclick = () => thankPopup.classList.add('hidden');
+
+  // Apri automaticamente il popup "Grazie" se arrivi con ?success=1
+  window.addEventListener('DOMContentLoaded', () => {
+    const sp = new URLSearchParams(window.location.search);
+    if (sp.get('success') === '1') {
+      thankPopup.classList.remove('hidden');
+    }
+  });
+
+  // ===============================
+  // Anteprima messaggio dinamica
+  // ===============================
+  function toggleCustomMessage(cb) {
+    document.getElementById('custom-message-block').style.display = cb.checked ? 'block' : 'none';
+    updatePreview();
+  }
+  function toggleSignature(cb) {
+    document.getElementById('signature-block').style.display = cb.checked ? 'block' : 'none';
+    updatePreview();
+  }
+
+  function updatePreview() {
+    let msg = '';
+    const customChecked = document.getElementById('custom-checkbox').checked;
+    if (customChecked) {
+      msg = document.getElementById('custom-message').value;
+    } else {
+      msg = document.getElementById('template-select').value;
+    }
+
+    if (document.getElementById('sign-checkbox').checked) {
+      const sig = document.getElementById('signature-input').value;
+      msg += `\n\n— ${sig}`;
+    }
+
+    document.getElementById('preview-message').innerText = msg;
+    document.getElementById('preview-block').style.display = msg.trim() ? 'block' : 'none';
+  }
+
+  document.getElementById('template-select').onchange = updatePreview;
+  document.getElementById('custom-message')?.addEventListener('input', updatePreview);
+  document.getElementById('signature-input')?.addEventListener('input', updatePreview);
+
+  // ===============================
+  // Stripe (chiave pubblicabile)
+  // ===============================
+  // Inserisci la tua pk_test (pubblica) qui sotto.
+  // Hai indicato: pk_test_51Rwh6hDezlzBzYlsn9of3Y3ox0F0lnnYQnF4PeVLpvfWONxGJkiGcD52vmWwyXNpsOtWIsVsgAvEmrowRiYVFcQg00hR78wWaG
+  const stripe = Stripe('pk_test_51Rwh6hDezlzBzYlsn9of3Y3ox0F0lnnYQnF4PeVLpvfWONxGJkiGcD52vmWwyXNpsOtWIsVsgAvEmrowRiYVFcQg00hR78wWaG');
+
+  // ===============================
+  // Procedi al pagamento
+  // ===============================
+  document.getElementById('proceed-payment').onclick = async () => {
+    try {
+      const email = document.getElementById('recipient-email').value.trim();
+
+      // Componi messaggio finale
+      let template = document.getElementById('custom-checkbox').checked
+        ? document.getElementById('custom-message').value
+        : document.getElementById('template-select').value;
+
+      const signed = document.getElementById('sign-checkbox').checked;
+      const custom = document.getElementById('custom-checkbox').checked;
+
+      if (signed) {
+        const sig = document.getElementById('signature-input').value;
+        template += `\n\n— ${sig}`;
+      }
+
+      // Validazioni base
+      if (!email) return alert('Inserisci un indirizzo email valido');
+      if (!template || !template.trim()) return alert('Seleziona un template o scrivi un messaggio personalizzato');
+
+      // Disabilita bottone e feedback utente
+      const btn = document.getElementById('proceed-payment');
+      btn.disabled = true;
+      const oldText = btn.innerText;
+      btn.innerText = 'Reindirizzamento a Stripe...';
+
+      // Chiamata backend per creare la sessione
+      const res = await fetch('/api/stripe/create-session', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, template, signed, custom })
+      });
+
+      if (!res.ok) {
+        const err = await res.text();
+        btn.disabled = false;
+        btn.innerText = oldText;
+        return alert('Errore creazione sessione pagamento: ' + err);
+      }
+
+      const data = await res.json();
+
+      // Due modalità supportate: o ritorni { url } oppure { sessionId }
+      if (data && data.url) {
+        // Redirect diretto via URL (se il backend restituisce session.url)
+        window.location.href = data.url;
+      } else if (data && data.sessionId) {
+        // Fallback: redirectToCheckout con sessionId
+        const result = await stripe.redirectToCheckout({ sessionId: data.sessionId });
+        if (result.error) {
+          alert('Errore Stripe: ' + result.error.message);
+        }
+      } else {
+        alert('Risposta inattesa dal server: manca url o sessionId.');
+      }
+
+      btn.disabled = false;
+      btn.innerText = oldText;
+    } catch (e) {
+      console.error(e);
+      alert('Errore imprevisto. Riprova tra poco.');
+      const btn = document.getElementById('proceed-payment');
+      btn.disabled = false;
+      btn.innerText = 'Procedi al pagamento su Stripe';
+    }
+  };
+  </script>
+
 </body>
 </html>
