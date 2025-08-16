@@ -66,8 +66,11 @@ app.post('/api/stripe/create-session', async (req, res) => {
     const unitAmount =
       (custom ? parseInt(PRICE_MINOR_UNIT_CUSTOM, 10) : parseInt(PRICE_MINOR_UNIT_TEMPLATE, 10)) || 99;
 
-    // Messaggio definitivo (senza firma aggiuntiva)
+    // Il messaggio rimane esattamente quello fornito dall’utente
     const msg = template;
+
+    // Log per debug: verifica che `msg` non contenga più la firma
+    console.log('Messaggio inviato a Stripe:', msg);
 
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ['card'],
@@ -101,6 +104,7 @@ app.post('/api/stripe/create-session', async (req, res) => {
     return res.status(500).send('Server error');
   }
 });
+
 
 
 // Webhook Stripe: legge i metadata e invia la mail via EmailJS
