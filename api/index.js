@@ -1,5 +1,6 @@
-// index.js
+// api/index.js
 require('dotenv').config();
+
 const express = require('express');
 const path = require('path');
 const Stripe = require('stripe');
@@ -8,17 +9,7 @@ const emailjs = require('@emailjs/nodejs');
 const app = express();
 const port = process.env.PORT || 3000;
 
-// ---------------------------
-// Config da variabili d'ambiente (metti queste nel tuo .env)
-// ---------------------------
-// STRIPE_SECRET_KEY=sk_test_...
-// STRIPE_WEBHOOK_SECRET=whsec_...
-// EMAILJS_PUBLIC_KEY=...
-// EMAILJS_PRIVATE_KEY=...
-// EMAILJS_SERVICE_ID=service_...
-// EMAILJS_TEMPLATE_ID=template_...
-// PRICE_MINOR_UNIT_CUSTOM=99        // in centesimi (es: 99 = €0,99) -> adatta al tuo caso
-// PRICE_MINOR_UNIT_TEMPLATE=99       // in centesimi (es: 99 = €0,99)
+// Env vars richieste
 const {
   STRIPE_SECRET_KEY,
   STRIPE_WEBHOOK_SECRET,
@@ -26,18 +17,18 @@ const {
   EMAILJS_PRIVATE_KEY,
   EMAILJS_SERVICE_ID,
   EMAILJS_TEMPLATE_ID,
+  // facoltative: se non impostate, si usa 99 (0,99€)
   PRICE_MINOR_UNIT_CUSTOM = '99',
   PRICE_MINOR_UNIT_TEMPLATE = '99',
 } = process.env;
 
-if (!STRIPE_SECRET_KEY) {
-  console.warn('ATTENZIONE: STRIPE_SECRET_KEY non impostata.');
-}
-if (!STRIPE_WEBHOOK_SECRET) {
-  console.warn('ATTENZIONE: STRIPE_WEBHOOK_SECRET non impostata.');
+if (!STRIPE_SECRET_KEY) console.warn('ATTENZIONE: STRIPE_SECRET_KEY non impostata.');
+if (!STRIPE_WEBHOOK_SECRET) console.warn('ATTENZIONE: STRIPE_WEBHOOK_SECRET non impostata.');
+if (!EMAILJS_PUBLIC_KEY || !EMAILJS_PRIVATE_KEY || !EMAILJS_SERVICE_ID || !EMAILJS_TEMPLATE_ID) {
+  console.warn('ATTENZIONE: Config EmailJS incompleta (PUBLIC/PRIVATE KEY, SERVICE_ID, TEMPLATE_ID).');
 }
 
-// 0️⃣ Blocca richieste contenenti parentesi quadre
+// Blocca richieste con parentesi quadre (evita path-to-regexp edge cases)
 app.use((req, res, next) => {
   if (req.url.includes('[') || req.url.includes(']')) {
     return res.status(404).send('Not found');
@@ -45,10 +36,10 @@ app.use((req, res, next) => {
   next();
 });
 
-// Percorso alla cartella public (risale di una directory rispetto a api/)
+// Public path (api/ => root/public)
 const publicPath = path.join(__dirname, '..', 'public');
 
-// 1️⃣ Body parser: raw per webhook, JSON per tutte le altre richieste
+// Body parser: raw per webhook Stripe, JSON per altre richieste
 app.use((req, res, next) => {
   if (req.originalUrl === '/api/stripe/webhook') {
     express.raw({ type: 'application/json' })(req, res, next);
@@ -57,28 +48,29 @@ app.use((req, res, next) => {
   }
 });
 
-// 2️⃣ Servi file statici
+// Statici
 app.use(express.static(publicPath));
 
-// 3️⃣ Memoria temporanea per gli ordini (in produzione usa un DB)
-const tempOrders = {};
-
-// 4️⃣ Endpoint per creare sessione Stripe
+// Stripe
 const stripe = Stripe(STRIPE_SECRET_KEY);
 
+// Crea sessione checkout: salva TUTTO nei metadata (nessun tempOrders)
 app.post('/api/stripe/create-session', async (req, res) => {
   try {
     const { email, template, signed, custom } = req.body || {};
 
-    // Validazioni minime
     if (!email || !template) {
       return res.status(400).send('Dati mancanti: email o template');
     }
 
-    const order_id = Math.random().toString(36).slice(2);
-    tempOrders[order_id] = { email, template, signed: !!signed, custom: !!custom };
+    const unitAmount =
+      (custom ? parseInt(PRICE_MINOR_UNIT_CUSTOM, 10) : parseInt(PRICE_MINOR_UNIT_TEMPLATE, 10)) || 99;
 
-    const unitAmount = custom ? parseInt(PRICE_MINOR_UNIT_CUSTOM, 10) : parseInt(PRICE_MINOR_UNIT_TEMPLATE, 10);
+    // Messaggio definitivo (se firmato)
+    let msg = template;
+    if (signed) {
+      msg += '\n\n-- Inviato con simpatia da Mavattenaffanculo.site';
+    }
 
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ['card'],
@@ -90,22 +82,25 @@ app.post('/api/stripe/create-session', async (req, res) => {
               name: 'Fanculo automatico',
               description: 'Invia un messaggio ironico via email!',
             },
-            unit_amount: unitAmount, // in centesimi
+            unit_amount: unitAmount, // centesimi
           },
           quantity: 1,
         },
       ],
       mode: 'payment',
-      // Aggiungi ?success=1 per aprire il popup "Grazie" al ritorno
       success_url: `${req.protocol}://${req.get('host')}/success?success=1`,
       cancel_url: `${req.protocol}://${req.get('host')}/cancel`,
-      metadata: { order_id },
+
+      // Dati necessari all'email via EmailJS (evita tempOrders)
+      metadata: {
+        email,                    // destinatario
+        msg_template: msg,        // messaggio finale
+        signed: String(!!signed),
+        custom: String(!!custom),
+      },
     });
 
-    // Modalità 1: ritorna URL diretto (consigliato per il tuo frontend)
-    // return res.json({ url: session.url });
-
-    // Modalità 2: ritorna sessionId (coerente col tuo codice originale)
+    // Restituisci sessionId (coerente col tuo frontend)
     return res.json({ sessionId: session.id });
   } catch (err) {
     console.error('Stripe session error:', err);
@@ -113,11 +108,11 @@ app.post('/api/stripe/create-session', async (req, res) => {
   }
 });
 
-// 5️⃣ Webhook Stripe
+// Webhook Stripe: legge i metadata e invia la mail via EmailJS
 app.post('/api/stripe/webhook', async (req, res) => {
   const sig = req.headers['stripe-signature'];
-
   let event;
+
   try {
     event = stripe.webhooks.constructEvent(req.body, sig, STRIPE_WEBHOOK_SECRET);
   } catch (err) {
@@ -127,40 +122,34 @@ app.post('/api/stripe/webhook', async (req, res) => {
 
   if (event.type === 'checkout.session.completed') {
     const session = event.data.object;
-    try {
-      const orderData = tempOrders[session.metadata.order_id];
-      if (orderData) {
-        let msg = orderData.template;
-        if (orderData.signed) {
-          msg += '\n\n-- Inviato con simpatia da Mavattenaffanculo.site';
-        }
 
-        // Invia email via EmailJS
-        try {
-          await emailjs.send(
-            EMAILJS_SERVICE_ID,
-            EMAILJS_TEMPLATE_ID,
-            { email: orderData.email, to_name: 'Utente', msg_template: msg },
-            { publicKey: EMAILJS_PUBLIC_KEY, privateKey: EMAILJS_PRIVATE_KEY }
-          );
-        } catch (e) {
-          console.error('Errore EmailJS:', e);
-        }
+    // Recupero diretto dai metadata
+    const email = session.metadata?.email;
+    const msg = session.metadata?.msg_template;
 
-        // Cleanup in memoria (opzionale)
-        delete tempOrders[session.metadata.order_id];
-      } else {
-        console.warn('Order non trovato per order_id:', session.metadata.order_id);
+    console.log('Webhook metadata:', { email, hasMsg: !!msg });
+
+    if (email && msg) {
+      try {
+        await emailjs.send(
+          EMAILJS_SERVICE_ID,
+          EMAILJS_TEMPLATE_ID,
+          { email, to_name: 'Utente', msg_template: msg },
+          { publicKey: EMAILJS_PUBLIC_KEY, privateKey: EMAILJS_PRIVATE_KEY }
+        );
+        console.log('EmailJS inviata con successo');
+      } catch (e) {
+        console.error('Errore EmailJS:', e);
       }
-    } catch (e) {
-      console.error('Errore gestione checkout.session.completed:', e);
+    } else {
+      console.warn('Metadata incompleti nel webhook:', session.metadata);
     }
   }
 
   res.json({ received: true });
 });
 
-// 6️⃣ Pagine di conferma/cancellazione statiche
+// Pagine statiche
 app.get('/success', (req, res) => {
   res.sendFile(path.join(publicPath, 'success.html'));
 });
@@ -168,11 +157,10 @@ app.get('/cancel', (req, res) => {
   res.sendFile(path.join(publicPath, 'cancel.html'));
 });
 
-// 7️⃣ Fallback generico (no path-to-regexp)
+// Fallback su index.html
 app.use((req, res) => {
   res.sendFile(path.join(publicPath, 'index.html'));
 });
 
-// 8️⃣ Avvia server
+// Avvio server (Render usa process.env.PORT)
 app.listen(port, () => console.log('Server avviato su porta ' + port));
-
