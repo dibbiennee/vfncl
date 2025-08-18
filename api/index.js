@@ -6,7 +6,7 @@ const emailjs = require('@emailjs/nodejs');
 const app = express();
 const port = process.env.PORT || 3000;
 
-// ========== Sicurezza Helmet con CSP personalizzata ==========
+// == Sicurezza Helmet con CSP personalizzata ==
 const helmet = require('helmet');
 app.use(
   helmet({
@@ -15,6 +15,7 @@ app.use(
         defaultSrc: ["'self'"],
         scriptSrc: [
           "'self'",
+          "'unsafe-inline'",
           "https://cdn.tailwindcss.com",
           "https://js.stripe.com",
           "https://plausible.io"
@@ -33,7 +34,7 @@ app.use(
     crossOriginEmbedderPolicy: false
   })
 );
-// =============================================================
+// =============
 
 const {
   STRIPE_SECRET_KEY,
