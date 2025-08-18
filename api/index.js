@@ -6,35 +6,7 @@ const emailjs = require('@emailjs/nodejs');
 const app = express();
 const port = process.env.PORT || 3000;
 
-// == Sicurezza Helmet con CSP personalizzata ==
-const helmet = require('helmet');
-app.use(
-  helmet({
-    contentSecurityPolicy: {
-      directives: {
-        defaultSrc: ["'self'"],
-        scriptSrc: [
-          "'self'",
-          "'unsafe-inline'",
-          "https://cdn.tailwindcss.com",
-          "https://js.stripe.com",
-          "https://plausible.io"
-        ],
-        connectSrc: [
-          "'self'",
-          "https://plausible.io",
-          "https://js.stripe.com"
-        ],
-        imgSrc: ["'self'", "data:", "https://plausible.io"],
-        styleSrc: ["'self'", "'unsafe-inline'"],
-        fontSrc: ["'self'", "https://fonts.gstatic.com", "data:"],
-        objectSrc: ["'none'"]
-      },
-    },
-    crossOriginEmbedderPolicy: false
-  })
-);
-// =============
+// =========== RIMOSSO Helmet! ===========
 
 const {
   STRIPE_SECRET_KEY,
