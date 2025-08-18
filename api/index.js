@@ -65,7 +65,7 @@ app.post('/api/stripe/create-session', async (req, res) => {
           price_data: {
             currency: 'eur',
             product_data: {
-              name: 'Fanculo automatico',
+              name: 'Invia un FANCULO',
               description: 'Invia un messaggio ironico via email!',
             },
             unit_amount: unitAmount,
