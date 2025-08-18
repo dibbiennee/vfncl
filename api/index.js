@@ -5,6 +5,8 @@ const Stripe = require('stripe');
 const emailjs = require('@emailjs/nodejs');
 const app = express();
 const port = process.env.PORT || 3000;
+const helmet = require('helmet');
+app.use(helmet());
 
 const {
   STRIPE_SECRET_KEY,
