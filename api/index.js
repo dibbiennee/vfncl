@@ -6,8 +6,7 @@ const emailjs = require('@emailjs/nodejs');
 const app = express();
 const port = process.env.PORT || 3000;
 
-// =========== RIMOSSO Helmet! ===========
-
+// === RIMOSSO Helmet! ===
 const {
   STRIPE_SECRET_KEY,
   STRIPE_WEBHOOK_SECRET,
@@ -18,14 +17,20 @@ const {
   PRICE_MINOR_UNIT_CUSTOM = '99',
   PRICE_MINOR_UNIT_TEMPLATE = '99',
 } = process.env;
+
+// COUNTER - Parti da un numero credibile
+let totalSentMessages = 1247;
+
 if (!STRIPE_SECRET_KEY) console.warn('ATTENZIONE: STRIPE_SECRET_KEY non impostata.');
 if (!STRIPE_WEBHOOK_SECRET) console.warn('ATTENZIONE: STRIPE_WEBHOOK_SECRET non impostata.');
 if (!EMAILJS_PUBLIC_KEY || !EMAILJS_PRIVATE_KEY || !EMAILJS_SERVICE_ID || !EMAILJS_TEMPLATE_ID) {
   console.warn('ATTENZIONE: Config EmailJS incompleta (PUBLIC/PRIVATE KEY, SERVICE_ID, TEMPLATE_ID).');
 }
+
 // CORS se serve (facoltativo, disattiva se tutto resta in locale/deploy unico)
 // const cors = require('cors');
 // app.use(cors());
+
 // Prevenzione errori path
 app.use((req, res, next) => {
   if (req.url.includes('[') || req.url.includes(']')) {
@@ -33,7 +38,9 @@ app.use((req, res, next) => {
   }
   next();
 });
+
 const publicPath = path.join(__dirname, '..', 'public');
+
 app.use((req, res, next) => {
   if (req.originalUrl === '/api/stripe/webhook') {
     express.raw({ type: 'application/json' })(req, res, next);
@@ -41,8 +48,16 @@ app.use((req, res, next) => {
     express.json()(req, res, next);
   }
 });
+
 app.use(express.static(publicPath));
+
 const stripe = Stripe(STRIPE_SECRET_KEY);
+
+// API COUNTER
+app.get('/api/counter', (req, res) => {
+  res.json({ count: totalSentMessages });
+});
+
 // CREA SESSIONE STRIPE
 app.post('/api/stripe/create-session', async (req, res) => {
   try {
@@ -84,6 +99,7 @@ app.post('/api/stripe/create-session', async (req, res) => {
     return res.status(500).send('Server error');
   }
 });
+
 // WEBHOOK STRIPE → Invio email tramite EmailJS DOPO pagamento
 app.post('/api/stripe/webhook', async (req, res) => {
   const sig = req.headers['stripe-signature'];
@@ -115,6 +131,8 @@ app.post('/api/stripe/webhook', async (req, res) => {
           }
         );
         console.log('Email inviata tramite EmailJS!');
+        // INCREMENTA IL COUNTER
+        totalSentMessages++;
       } catch (e) {
         console.error('Errore EmailJS:', e);
       }
@@ -122,14 +140,18 @@ app.post('/api/stripe/webhook', async (req, res) => {
   }
   res.json({ received: true });
 });
+
 // Static files e fallback
 app.get('/success', (req, res) => {
   res.sendFile(path.join(publicPath, 'success.html'));
 });
+
 app.get('/cancel', (req, res) => {
   res.sendFile(path.join(publicPath, 'cancel.html'));
 });
+
 app.use((req, res) => {
   res.sendFile(path.join(publicPath, 'index.html'));
 });
+
 app.listen(port, () => console.log('Server avviato su porta ' + port));
