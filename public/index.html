@@ -10,39 +10,74 @@
   <script defer data-domain="mavattenaffanculo.site" src="https://plausible.io/js/script.js"></script>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://js.stripe.com/v3/"></script>
-</head>
+  <style>
+  @keyframes bounce-subtle {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-5px); }
+  }
 
+  .bounce-hover:hover {
+    animation: bounce-subtle 0.6s ease-in-out;
+  }
+
+  .gradient-text {
+    background: linear-gradient(45deg, #ff6b6b, #4ecdc4, #45b7d1);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-size: 200% 200%;
+    animation: gradient-shift 3s ease infinite;
+  }
+
+  @keyframes gradient-shift {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+  }
+  </style>
+</head>
+<body class="bg-gray-50">
   <!-- Hero Section -->
-  <section id="hero" class="flex flex-col items-center justify-center text-center py-20 bg-white px-4">
-    <h1 class="text-4xl md:text-6xl font-bold text-orange-600 mb-4">
-      Invia un Fanculo con un Click!
+  <section id="hero" class="flex flex-col items-center justify-center text-center py-20 bg-gradient-to-br from-orange-400 via-red-500 to-pink-500 text-white px-4">
+    <h1 class="text-4xl md:text-6xl font-bold mb-4 drop-shadow-lg">
+      Invia un Fanculo con un Click! 🚀
     </h1>
-    <p class="text-lg md:text-xl mb-6 px-4">
+    <p class="text-lg md:text-xl mb-6 px-4 opacity-90">
       Il modo più veloce e divertente per mandare un messaggio indimenticabile.
     </p>
     <div class="flex gap-4">
-      <button id="open-send-popup" class="px-6 py-3 bg-orange-600 text-white rounded-lg hover:bg-orange-700 transition">
-        Invia ora – 0,99 €
+      <button id="open-send-popup" class="px-6 py-3 bg-white text-orange-600 rounded-lg hover:bg-gray-100 transition font-semibold shadow-lg bounce-hover">
+        Invia ora – 0,99 € 🚀
       </button>
-      <a href="#how-it-works" class="px-6 py-3 border border-orange-600 text-orange-600 rounded-lg hover:bg-orange-100 transition">
+      <a href="#how-it-works" class="px-6 py-3 border-2 border-white text-white rounded-lg hover:bg-white hover:text-orange-600 transition font-semibold">
         Come funziona
       </a>
+    </div>
+  </section>
+
+  <!-- Counter Section -->
+  <section class="py-8 bg-gradient-to-r from-orange-100 to-orange-50">
+    <div class="text-center">
+      <p class="text-sm text-gray-600 mb-2">Vaffanculo già inviati:</p>
+      <div class="text-3xl font-bold text-orange-600" id="message-counter">
+        <span id="counter-number">🤔</span>
+      </div>
+      <p class="text-xs text-gray-500 mt-1">e la conta continua...</p>
     </div>
   </section>
 
   <!-- Vantaggi rapidi -->
   <section id="benefits" class="py-16 px-4">
     <div class="max-w-4xl mx-auto grid grid-cols-1 sm:grid-cols-3 gap-8 text-center">
-      <div class="p-6 bg-white rounded-lg shadow hover:shadow-lg transition">
-        <h3 class="text-xl font-semibold mb-2">Veloce</h3>
+      <div class="p-6 bg-white rounded-lg shadow hover:shadow-lg transition bounce-hover">
+        <h3 class="text-xl font-semibold mb-2">Veloce ⚡</h3>
         <p>In meno di un minuto il tuo messaggio arriva.</p>
       </div>
-      <div class="p-6 bg-white rounded-lg shadow hover:shadow-lg transition">
-        <h3 class="text-xl font-semibold mb-2">Divertente</h3>
+      <div class="p-6 bg-white rounded-lg shadow hover:shadow-lg transition bounce-hover">
+        <h3 class="text-xl font-semibold mb-2">Divertente 😂</h3>
         <p>Un'esperienza ironica che fa sorridere.</p>
       </div>
-      <div class="p-6 bg-white rounded-lg shadow hover:shadow-lg transition relative">
-        <h3 class="text-xl font-semibold mb-2">Anonimo</h3>
+      <div class="p-6 bg-white rounded-lg shadow hover:shadow-lg transition relative bounce-hover">
+        <h3 class="text-xl font-semibold mb-2">Anonimo 🕵️</h3>
         <p>Se vuoi, nessuno saprà che sei stato tu.</p>
         <small class="absolute bottom-3 right-3 text-xs text-gray-500">(opzionale)</small>
       </div>
@@ -93,68 +128,84 @@
     </div>
   </section>
 
+  <!-- Testimonianze -->
+  <section class="py-16 bg-yellow-50">
+    <div class="max-w-4xl mx-auto px-4">
+      <h2 class="text-3xl font-bold text-center mb-8 gradient-text">
+        Chi l'ha già usato non può farne a meno! 😂
+      </h2>
+      <div class="grid md:grid-cols-3 gap-6">
+        <div class="bg-white p-6 rounded-lg shadow-md bounce-hover">
+          <p class="italic">"Finalmente ho potuto dire a mio cognato quello che penso... anonimamente!"</p>
+          <p class="text-right mt-4 text-orange-600 font-semibold">— Maria, 34</p>
+        </div>
+        <div class="bg-white p-6 rounded-lg shadow-md bounce-hover">
+          <p class="italic">"Il mio capo non ha mai capito chi gliel'ha mandato. Perfetto! 🤫"</p>
+          <p class="text-right mt-4 text-orange-600 font-semibold">— Luca, 28</p>
+        </div>
+        <div class="bg-white p-6 rounded-lg shadow-md bounce-hover">
+          <p class="italic">"Meglio di WhatsApp per dire quello che penso davvero!"</p>
+          <p class="text-right mt-4 text-orange-600 font-semibold">— Giulia, 31</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <!-- FAQ -->
   <section id="faq" class="py-16 bg-white px-4">
     <div class="max-w-3xl mx-auto px-4">
       <h2 class="text-2xl font-bold mb-8 text-center text-orange-600">FAQ</h2>
       <div class="space-y-4">
-
         <details class="border rounded-lg p-4 group">
           <summary class="cursor-pointer font-semibold text-lg flex items-center justify-between">
             Il servizio è anonimo?
-            <span class="ml-2 transition-transform group-open:rotate-180">&#9660;</span>
+            <span class="ml-2 transition-transform group-open:rotate-180">▼</span>
           </summary>
           <p class="text-gray-700 mt-2">
             Sì! Se non firmi il messaggio, il destinatario non saprà chi sei. Se vuoi, puoi anche lasciare una firma personalizzata.
           </p>
         </details>
-
         <details class="border rounded-lg p-4 group">
           <summary class="cursor-pointer font-semibold text-lg flex items-center justify-between">
             Il destinatario può rispondere?
-            <span class="ml-2 transition-transform group-open:rotate-180">&#9660;</span>
+            <span class="ml-2 transition-transform group-open:rotate-180">▼</span>
           </summary>
           <p class="text-gray-700 mt-2">No, la mail è unidirezionale e non sono previste risposte.</p>
         </details>
-
         <details class="border rounded-lg p-4 group">
           <summary class="cursor-pointer font-semibold text-lg flex items-center justify-between">
             Quanto ci mette ad arrivare?
-            <span class="ml-2 transition-transform group-open:rotate-180">&#9660;</span>
+            <span class="ml-2 transition-transform group-open:rotate-180">▼</span>
           </summary>
           <p class="text-gray-700 mt-2">Di solito pochi secondi/minuti! In casi rari qualche minuto in più.</p>
         </details>
-
         <details class="border rounded-lg p-4 group">
           <summary class="cursor-pointer font-semibold text-lg flex items-center justify-between">
             Posso scrivere qualsiasi cosa?
-            <span class="ml-2 transition-transform group-open:rotate-180">&#9660;</span>
+            <span class="ml-2 transition-transform group-open:rotate-180">▼</span>
           </summary>
           <p class="text-gray-700 mt-2">
             No, i messaggi vengono filtrati: niente minacce, insulti gravi o contenuti illegali. I messaggi fuori regola non vengono inviati e riceverai una notifica della mancata consegna.
           </p>
         </details>
-
         <details class="border rounded-lg p-4 group">
           <summary class="cursor-pointer font-semibold text-lg flex items-center justify-between">
             Posso inviare lo stesso messaggio a più persone?
-            <span class="ml-2 transition-transform group-open:rotate-180">&#9660;</span>
+            <span class="ml-2 transition-transform group-open:rotate-180">▼</span>
           </summary>
           <p class="text-gray-700 mt-2">
             No, ogni invio corrisponde a un destinatario unico per garantire il massimo rispetto e controllo.
           </p>
         </details>
-
         <details class="border rounded-lg p-4 group">
           <summary class="cursor-pointer font-semibold text-lg flex items-center justify-between">
             Posso avere la ricevuta?
-            <span class="ml-2 transition-transform group-open:rotate-180">&#9660;</span>
+            <span class="ml-2 transition-transform group-open:rotate-180">▼</span>
           </summary>
           <p class="text-gray-700 mt-2">
             Certo! Ricevi sempre copia del messaggio nella tua email (se indicata).
           </p>
         </details>
-
       </div>
     </div>
   </section>
@@ -165,7 +216,7 @@
       <h2 class="text-2xl font-bold text-orange-600 mb-4">Pronto a mandare il tuo messaggio?</h2>
       <p class="mb-6">Fallo ora in modo divertente, anonimo e sicuro: basta un click!</p>
       <button onclick="document.getElementById('open-send-popup').click()"
-        class="px-8 py-3 bg-orange-600 text-white text-lg rounded-lg hover:bg-orange-700 transition font-semibold">
+        class="px-8 py-3 bg-orange-600 text-white text-lg rounded-lg hover:bg-orange-700 transition font-semibold bounce-hover">
         Invia ora
       </button>
     </div>
@@ -185,7 +236,7 @@
         <h3 class="font-semibold mt-4">3. Uso dei Dati</h3>
         <p>I dati di navigazione vengono utilizzati esclusivamente per analisi statistiche e miglioramento del sito. Non trattiamo richieste di cancellazione, rettifica o accesso ai dati, in quanto non conserviamo dati personali identificativi.</p>
         <h3 class="font-semibold mt-4">4. Contenuti Offensivi</h3>
-        <p>Non siamo responsabili dei contenuti offensivi inseriti dagli utenti. Ogni messaggio è generato dall’utente e il nostro ruolo è solo tecnico di invio.</p>
+        <p>Non siamo responsabili dei contenuti offensivi inseriti dagli utenti. Ogni messaggio è generato dall'utente e il nostro ruolo è solo tecnico di invio.</p>
         <h3 class="font-semibold mt-4">5. Contatti</h3>
         <p>Per domande su questa Privacy Policy, scrivi a <a href="mailto:info@mavattenaffanculo.site" class="text-orange-600 hover:underline">info@mavattenaffanculo.site</a>.</p>
         <p class="text-xs text-gray-500 mt-4">Ultimo aggiornamento: 16 agosto 2025</p>
@@ -284,7 +335,7 @@
     <div class="bg-white rounded-lg w-80 p-6 text-center relative">
       <button id="close-thankyou-popup" class="absolute top-3 right-3 text-gray-500 hover:text-gray-800">&times;</button>
       <h2 class="text-2xl font-semibold mb-4">Grazie!</h2>
-      <p>Il tuo messaggio è stato inviato. (¯\\_(ツ)\\_/¯)</p>
+      <p>Il tuo messaggio è stato inviato. (¯\\\_(ツ)\\\_/¯)</p>
     </div>
   </div>
 
@@ -296,9 +347,9 @@
 
   <!-- Modals Script -->
   <script>
-  // ===============================
+  // =======
   // Modali Privacy/Termini
-  // ===============================
+  // =======
   function openModal(id) {
     document.getElementById(id).classList.remove('hidden');
   }
@@ -306,9 +357,9 @@
     document.getElementById(id).classList.add('hidden');
   }
 
-  // ===============================
+  // =======
   // Popup invio e popup "Grazie"
-  // ===============================
+  // =======
   const sendPopup = document.getElementById('send-popup');
   const thankPopup = document.getElementById('thankyou-popup');
 
@@ -316,21 +367,34 @@
   document.getElementById('close-send-popup').onclick = () => sendPopup.classList.add('hidden');
   document.getElementById('close-thankyou-popup').onclick = () => thankPopup.classList.add('hidden');
 
+  // COUNTER - Carica il counter
+  async function loadCounter() {
+    try {
+      const response = await fetch('/api/counter');
+      const data = await response.json();
+      document.getElementById('counter-number').textContent = data.count.toLocaleString('it-IT');
+    } catch (e) {
+      document.getElementById('counter-number').textContent = '∞';
+    }
+  }
+
   // Apri automaticamente il popup "Grazie" se arrivi con ?success=1
   window.addEventListener('DOMContentLoaded', () => {
+    loadCounter(); // CARICA IL COUNTER
     const sp = new URLSearchParams(window.location.search);
     if (sp.get('success') === '1') {
       thankPopup.classList.remove('hidden');
     }
   });
 
-  // ===============================
+  // =======
   // Anteprima messaggio dinamica
-  // ===============================
+  // =======
   function toggleCustomMessage(cb) {
     document.getElementById('custom-message-block').style.display = cb.checked ? 'block' : 'none';
     updatePreview();
   }
+
   function toggleSignature(cb) {
     document.getElementById('signature-block').style.display = cb.checked ? 'block' : 'none';
     updatePreview();
@@ -344,12 +408,10 @@
     } else {
       msg = document.getElementById('template-select').value;
     }
-
     if (document.getElementById('sign-checkbox').checked) {
       const sig = document.getElementById('signature-input').value;
       msg += `\n\n— ${sig}`;
     }
-
     document.getElementById('preview-message').innerText = msg;
     document.getElementById('preview-block').style.display = msg.trim() ? 'block' : 'none';
   }
@@ -358,59 +420,50 @@
   document.getElementById('custom-message')?.addEventListener('input', updatePreview);
   document.getElementById('signature-input')?.addEventListener('input', updatePreview);
 
-  // ===============================
+  // =======
   // Stripe (chiave pubblicabile)
-  // ===============================
-  // Inserisci la tua pk_test (pubblica) qui sotto.
-  // Hai indicato: pk_test_51Rwh6hDezlzBzYlsn9of3Y3ox0F0lnnYQnF4PeVLpvfWONxGJkiGcD52vmWwyXNpsOtWIsVsgAvEmrowRiYVFcQg00hR78wWaG
-  const stripe = Stripe('pk_live_51Rwh6WDcWQxl4bKIxNuVi0Z19UBYnGt8bqyU1JGRHb8LNAdwTZTFvWXwRgJMAnlYmkozO7F5qtJmyE2Pv82fZ7HK00LbLtkDzD');
+  // =======
+  // Inserisci la tua pk\_test (pubblica) qui sotto.
+  // Hai indicato: pk\_test\_51Rwh6hDezlzBzYlsn9of3Y3ox0F0lnnYQnF4PeVLpvfWONxGJkiGcD52vmWwyXNpsOtWIsVsgAvEmrowRiYVFcQg00hR78wWaG
+  const stripe = Stripe('pk_test_51Rwh6hDezlzBzYlsn9of3Y3ox0F0lnnYQnF4PeVLpvfWONxGJkiGcD52vmWwyXNpsOtWIsVsgAvEmrowRiYVFcQg00hR78wWaG');
 
-  // ===============================
+  // =======
   // Procedi al pagamento
-  // ===============================
+  // =======
   document.getElementById('proceed-payment').onclick = async () => {
     try {
       const email = document.getElementById('recipient-email').value.trim();
-
       // Componi messaggio finale
       let template = document.getElementById('custom-checkbox').checked
         ? document.getElementById('custom-message').value
         : document.getElementById('template-select').value;
-
       const signed = document.getElementById('sign-checkbox').checked;
       const custom = document.getElementById('custom-checkbox').checked;
-
       if (signed) {
         const sig = document.getElementById('signature-input').value;
         template += `\n\n— ${sig}`;
       }
-
       // Validazioni base
       if (!email) return alert('Inserisci un indirizzo email valido');
       if (!template || !template.trim()) return alert('Seleziona un template o scrivi un messaggio personalizzato');
-
       // Disabilita bottone e feedback utente
       const btn = document.getElementById('proceed-payment');
       btn.disabled = true;
       const oldText = btn.innerText;
       btn.innerText = 'Reindirizzamento a Stripe...';
-
       // Chiamata backend per creare la sessione
       const res = await fetch('/api/stripe/create-session', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, template, signed, custom })
       });
-
       if (!res.ok) {
         const err = await res.text();
         btn.disabled = false;
         btn.innerText = oldText;
         return alert('Errore creazione sessione pagamento: ' + err);
       }
-
       const data = await res.json();
-
       // Due modalità supportate: o ritorni { url } oppure { sessionId }
       if (data && data.url) {
         // Redirect diretto via URL (se il backend restituisce session.url)
@@ -424,7 +477,6 @@
       } else {
         alert('Risposta inattesa dal server: manca url o sessionId.');
       }
-
       btn.disabled = false;
       btn.innerText = oldText;
     } catch (e) {
@@ -436,6 +488,5 @@
     }
   };
   </script>
-
 </body>
 </html>
